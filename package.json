@@ -1,0 +1,57 @@
+{
+  "name": "gulp-boilerplate",
+  "version": "0.0.1",
+  "description": "Gulp Theme framework",
+  "main": "index.js",
+  "scripts": {
+    "postinstall": "gulp copy-assets"
+  },
+  "engines": {
+    "npm": ">=2.1.8"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lagab/gulp-boilerplate.git"
+  },
+  "keywords": [
+    "theme",
+    "framework",
+    "bootstrap"
+  ],
+  "author": "Ladislas Gabriel",
+  "license": "GPL-2.0",
+  "bugs": {
+    "url": "https://github.com/lagab/gulp-boilerplate/issues"
+  },
+  "homepage": "https://http://ladislas-gabriel.fr",
+  "dependencies": {
+    "bootstrap": "4.3.1",
+    "browser-sync": "^2.23.6",
+    "del": "^3.0.0",
+    "font-awesome": "^4.7.0",
+    "gulp": "3.9.1",
+    "gulp-autoprefixer": "6.0.0",
+    "gulp-clean-css": "^3.9.2",
+    "gulp-clone": "2.0.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-cssnano": "^2.1.2",
+    "gulp-ignore": "^2.0.2",
+    "gulp-imagemin": "^4.1.0",
+    "gulp-merge": "^0.1.1",
+    "gulp-plumber": "^1.2.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-replace": "1.0.0",
+    "gulp-rimraf": "^0.2.2",
+    "gulp-sass": "4.0.2",
+    "gulp-sequence": "1.0.0",
+    "gulp-sourcemaps": "2.6.4",
+    "gulp-uglify": "^3.0.0",
+    "gulp-watch": "5.0.1",
+    "merge2": "^1.2.1",
+    "run-sequence": "^2.2.1"
+  },
+  "devDependencies": {
+    "jquery": "1.9.1 - 3",
+    "popper.js": "^1.14.7"
+  }
+}
