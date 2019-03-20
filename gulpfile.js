@@ -1,25 +1,26 @@
 // Defining requirements
-var gulp = require( 'gulp' );
+var gulp = require( 'gulp' );                         // gulp core.
 var plumber = require( 'gulp-plumber' );
-var sass = require( 'gulp-sass' );
-var watch = require( 'gulp-watch' );
-var cssnano = require( 'gulp-cssnano' );
-var rename = require( 'gulp-rename' );
-var concat = require( 'gulp-concat' );
-var uglify = require( 'gulp-uglify' );
-var merge2 = require( 'merge2' );
-var imagemin = require( 'gulp-imagemin' );
-var ignore = require( 'gulp-ignore' );
-var rimraf = require( 'gulp-rimraf' );
-var clone = require( 'gulp-clone' );
-var merge = require( 'gulp-merge' );
-var sourcemaps = require( 'gulp-sourcemaps' );
+var sass = require( 'gulp-sass' );                    // Compile SASS code
+var watch = require( 'gulp-watch' );                  // File watcher
+var cssnano = require( 'gulp-cssnano' );              // Minify CSS.
+var rename = require( 'gulp-rename' );                // Rename files.
+var concat = require( 'gulp-concat' );                // Concatenates files
+var uglify = require( 'gulp-uglify' );                // Minify JS.
+var merge2 = require( 'merge2' );                     // Merge multiple streams
+var imagemin = require( 'gulp-imagemin' );            // Images optimisation.
+var ignore = require( 'gulp-ignore' );                // Ignore or exclude gulp files
+var sourcemaps = require( 'gulp-sourcemaps' );        // Generate SASS sourcemap.
 var browserSync = require( 'browser-sync' ).create();
-var del = require( 'del' );
-var cleanCSS = require( 'gulp-clean-css' );
-var gulpSequence = require( 'gulp-sequence' );
-var replace = require( 'gulp-replace' );
-var autoprefixer = require( 'gulp-autoprefixer' );
+var vinylPaths = require('vinyl-paths');              // Get file paths
+var del = require( 'del' );                           // Remove files.
+var cleanCSS = require( 'gulp-clean-css' );           // Minify CSS.
+var gulpSequence = require( 'gulp-sequence' );        // Run a series of gulp tasks in order
+var replace = require( 'gulp-replace' );              // Replace plugin
+var autoprefixer = require( 'gulp-autoprefixer' );    // Add browsers prefix.
+var jshint = require('gulp-jshint');                  // JS Code quality.
+var stylelint = require('gulp-stylelint');            // CSS code quality.
+
 
 // Configuration file to keep your code DRY
 var cfg = require( './gulpconfig.json' );
@@ -48,12 +49,41 @@ gulp.task( 'sass', function() {
 	return stream;
 });
 
+/* =============================================================================
+   Lint
+============================================================================= */
+// SCSS
+gulp.task('lint-css', ['styles'], function lintCssTask() {
+
+	return gulp
+		.src(paths.sass + '**/*.scss')
+		.pipe(stylelint({
+			syntax: 'scss',
+			fix: false,
+			reporters: [
+				{formatter: 'string', console: true}
+			]
+		}));
+});
+
+
+// JS.
+gulp.task('jshint', function() {
+	return gulp.src(paths.dev + '/js/**/*.js')
+		.pipe(ignore.exclude('**/bootstrap4/*.js'))
+		.pipe(ignore.exclude('**/plugins/contrib/*.js'))
+		.pipe(ignore.exclude('**/*.min.js'))
+		.pipe(jshint())
+		.pipe(jshint.reporter('jshint-stylish'));
+});
+
+
 // Run:
 // gulp watch
 // Starts watcher. Watcher runs gulp sass task on changes
 gulp.task( 'watch', function() {
-	gulp.watch( paths.sass + '/**/*.scss', ['styles'] );
-	gulp.watch( [paths.dev + '/js/**/*.js', 'js/**/*.js', '!js/theme.js', '!js/theme.min.js'], ['scripts'] );
+	gulp.watch( paths.sass + '/**/*.scss', ['styles','lint-css'] );
+	gulp.watch( [paths.dev + '/js/**/*.js', 'js/**/*.js', '!js/theme.js', '!js/theme.min.js'], ['scripts','jshint'] );
 
 	//Inside the watch task.
 	gulp.watch( paths.imgsrc + '/**', ['imagemin-watch'] );
@@ -112,7 +142,7 @@ gulp.task( 'minifycss', function() {
 gulp.task( 'cleancss', function() {
 	return gulp.src( paths.css + '/*.min.css', { read: false } ) // Much faster
 		.pipe( ignore( 'theme.css' ) )
-		.pipe( rimraf() );
+		.pipe( vinylPaths(del) );
 });
 
 gulp.task( 'styles', function( callback ) {
